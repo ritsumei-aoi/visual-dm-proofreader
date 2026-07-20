@@ -7,8 +7,25 @@
 
 <body>
   <script>
+    // スキル実行時に呼ばれるロジック（ダミー応答を返す）
+    function handleSkillExecution(data) {
+      return JSON.stringify({
+        status: "success",
+        message: "Context extracted. Proceed to analyze the image."
+      });
+    }
+
+    // アプリの各種バージョンで要求される可能性がある関数名を網羅
+    window.executeSkill = async function (data) {
+      return handleSkillExecution(data);
+    };
+
+    window.onRun = async function (data) {
+      return handleSkillExecution(data);
+    };
+
     window.ai_edge_gallery_get_result = async function (data) {
-      return JSON.stringify({ status: "ready_to_analyze" });
+      return handleSkillExecution(data);
     };
   </script>
 </body>
