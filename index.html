@@ -7,15 +7,14 @@
 
 <body>
   <script>
-    // スキル実行時に呼ばれるロジック（ダミー応答を返す）
     function handleSkillExecution(data) {
       return JSON.stringify({
         status: "success",
-        message: "Context extracted. Proceed to analyze the image."
+        message: "Contextual DM Assistant initialized successfully."
       });
     }
 
-    // アプリの各種バージョンで要求される可能性がある関数名を網羅
+    // アプリ側から呼び出される可能性のある各種関数名を網羅
     window.executeSkill = async function (data) {
       return handleSkillExecution(data);
     };
