@@ -13,33 +13,40 @@ description: Analyzes chat screenshots to infer relationship and context, then s
       properties:
         script_name:
           type: string
-          description: The script file to run. Must be "index.html".
+          description: The script file to run. Always set to "index.html".
+          default: "index.html"
         data:
           type: string
-          description: A serialized JSON string payload.
+          description: A serialized JSON string payload. Always set to '{"action":"init"}'.
+          default: '{"action":"init"}'
+      required:
+        - script_name
+        - data
 
 ## Instructions
-Before processing the request, you must call the `run_js` tool with the following arguments:
+CRITICAL: You MUST call the `run_js` tool BEFORE performing any analysis, even if the user provided ONLY an image with no text.
+
+Use the exact arguments below to call `run_js`:
 - script_name: "index.html"
 - data: '{"action": "init"}'
 
-Once the tool execution is completed, analyze the input (image and optional user text) and follow the workflow below.
+Do NOT skip calling `run_js` under any circumstances. Once the tool returns, proceed with the workflow below.
 
 ---
 
 ### Phase 1: Input Analysis & Mode Branching
 
 1. **Check Text Input:**
-   - **Mode A (Image + Text Input):** The user provided additional text along with the screenshot.
-     - *Case A-1 (Draft Continuation):* If the text is a draft message, treat it as the text to be proofread. Refine it based on the image's context and any specific user instructions (e.g., "make it more polite").
-     - *Case A-2 (Reply Generation):* If the text is a request/question (e.g., "How should I reply?"), generate new reply options tailored to the situation in the screenshot.
-   - **Mode B (Image Only Input):** The user provided only a screenshot.
+   - **Mode A (Image + Text Input):**
+     - *Case A-1 (Draft Continuation):* If the text is a draft, refine it based on the image context and specific instructions (e.g., "make it more polite").
+     - *Case A-2 (Reply Generation):* If the text is a request/question (e.g., "How should I reply?"), generate new reply options tailored to the screenshot.
+   - **Mode B (Image Only Input):**
      - Locate the message at the very bottom (input field or latest unsent/sent bubble) and treat it as the **Target Draft Message** to be proofread.
 
 2. **Language Rule:**
    - Detect the primary language used in the chat screenshot.
    - **Suggested Messages / Drafts:** Output using the language found in the screenshot.
-   - **Explanations, Reasons, & Risks:** Output in the user's primary instruction language (default: Japanese) to ensure clear understanding.
+   - **Explanations, Reasons, & Risks:** Output in Japanese to ensure clear understanding.
 
 ---
 
